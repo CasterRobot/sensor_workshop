@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCD Height Measurement</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .control-panel {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .results {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .results p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .results span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cube Diameter Measurement</h1>
+        
+        <div class="control-panel">
+            <button id="startMeasurement">Start Measurement</button>
+            <div class="results">
+                <p>Laser Position: <span id="pixelIndex">--</span></p>
+                <p>Voltage Value: <span id="voltageValue">--</span></p>
+                <p>Height: <span id="heightValue">--</span> mm</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="voltageChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let port1;
+        let port2;
+        let reader;
+        let writer;
+        let chart;
+        let isRunning = false;
+        const ANGLE_FACTOR = 3200 / 360;
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('voltageChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Diameter Values',
+                        data: [],
+                        borderColor: 'red',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 0 // Disable animation for real-time updates
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Pixel Index'
+                            },
+                            min: 0,
+                            max: 3648, // Set to number of pixels - 1
+                            ticks: {
+                                maxTicksLimit: 20 // Limit the number of ticks for better readability
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Voltage Value'
+                            },
+                            min: 0,
+                            max: 10000,
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 2000
+                            },
+                            grace: 0
+                        }
+                    }
+                }
+            });
+        }
+
+        // Apply exponential smoothing with configurable alpha
+        function exponentialSmoothing(data, alpha = 0.2) {
+            const filtered = [];
+            let last = data[0];
+            for (const point of data) {
+                const smoothed = alpha * point + (1 - alpha) * last;
+                filtered.push(smoothed);
+                last = smoothed;
+            }
+            return filtered;
+        }
+
+        // Convert hex string to voltage values
+        function processData(dataArray) {
+            const voltageValues = [];
+            for (let i = 0; i < dataArray.length; i += 2) {
+                const low = dataArray[i];
+                const high = dataArray[i + 1];
+                const value = (high << 8) | low;
+                voltageValues.push(value);
+            }
+            return exponentialSmoothing(voltageValues);
+        }
+
+        // Calculate height from voltage values
+        function calculateHeight(voltageValues) {
+            const minIndex = voltageValues.indexOf(Math.min(...voltageValues));
+            const minValue = voltageValues[minIndex];
+            const height = minIndex * 8 * 0.001 + (0.0007880973143304617* minIndex + 19.853379314400378);
+            return { minIndex, minValue, height };
+        }
+
+        // Update the chart with new data
+        function updateChart(voltageValues) {
+            chart.data.labels = voltageValues.map((_, index) => index);
+            chart.data.datasets[0].data = voltageValues;
+            
+            // Ensure the y-axis scale remains fixed at 0-10000
+            chart.options.scales.y.min = 0;
+            chart.options.scales.y.max = 10000;
+            
+            chart.update('none'); // Update without animation
+        }
+
+        // Update the display values
+        function updateDisplay(minIndex, minValue, height) {
+            document.getElementById('pixelIndex').textContent = minIndex;
+            document.getElementById('voltageValue').textContent = minValue;
+            document.getElementById('heightValue').textContent = height.toFixed(3);
+        }
+
+        // Sleep function
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Continuous measurement function
+        async function continuousMeasurement() {
+            try {
+                reader = port2.readable.getReader();
+                const expectedLength = 3648 * 2; // Each pixel needs 2 bytes
+
+                const writer1 = port1.writable.getWriter();
+                const writer2 = port2.writable.getWriter();
+                const measure_req_data = new Uint8Array([0xA1]); // hex 'A1'
+
+                const measureReqByte = new Uint8Array(["iSM"]);
+                const measureReqStringData = textEncoder.encode(message);
+                const measureReqLengthByte = new Uint8Array([stringData.length]);
+                
+                // Combine all parts
+                const measureReqData = new Uint8Array([
+                    ...commandByte,
+                    ...lengthByte,
+                    ...stringData
+                ]);
+
+                angle = 0;
+                
+                while (isRunning) {
+                    try {
+
+                        const motorStepData = new Uint8Array([0xA1]); 
+
+                        const value = Math.round(ANGLE_FACTOR * angle);
+                
+                        // Create buffer with DataView for big-endian conversion
+                        const motorMoveBuffer = new ArrayBuffer(2);
+                        const view = new DataView(motorMoveBuffer);
+                        view.setUint16(0, value, false); // false for big-endian
+                        
+                        // Create final data array
+                        const sendData = new Uint8Array([
+                            0xA1,        // Header byte
+                            view.getUint8(0),  // High byte
+                            view.getUint8(1)   // Low byte
+                        ]);
+                        
+                        await writer.write(measureReqData);
+                        writer.releaseLock();
+
+                        updateChart(voltageValues);
+
+                        let buffer = new Uint8Array(0);
+                        while (buffer.length < expectedLength) {
+                            const { value, done } = await reader.read();
+                            
+                            if (done) {
+                                break;
+                            }
+                            
+                            if (value) {
+                                // Concatenate the new data with existing buffer
+                                const newBuffer = new Uint8Array(buffer.length + value.length);
+                                newBuffer.set(buffer);
+                                newBuffer.set(value, buffer.length);
+                                buffer = newBuffer;
+                            }
+                        }
+
+                        if (buffer.length >= expectedLength) {
+                            const voltageValues = processData(buffer.slice(0, expectedLength));
+                            const { minIndex, minValue, height } = calculateHeight(voltageValues);
+                            
+                            updateChart(voltageValues);
+                            updateDisplay(minIndex, minValue, height);
+                        }
+
+                        await sleep(50); // Wait 50ms before next measurement
+                    } catch (error) {
+                        if (!isRunning) {
+                            break;
+                        }
+                        console.error('Error during measurement:', error);
+                        alert('Error during measurement. Measurement stopped.');
+                        break;
+                    }
+                    angle = angle + 5;
+                }
+            } catch (error) {
+                console.error('Error setting up measurement:', error);
+                alert('Error setting up measurement. Please try again.');
+            } finally {
+                if (reader) {
+                    try {
+                        await reader.cancel();
+                        reader.releaseLock();
+                    } catch (error) {
+                        console.error('Error cleaning up reader:', error);
+                    }
+                    reader = null;
+                }
+                isRunning = false;
+                document.getElementById('startMeasurement').textContent = 'Start Measurement';
+            }
+        }
+
+        // Start measurement function
+        async function startMeasurement() {
+            if (isRunning) return;
+            
+            try {
+                // Request serial port access if not already connected
+                if (!port1) { // for the motor
+                    port1 = await navigator.serial.requestPort();
+                    await port1.open({ baudRate: 115200 });
+                }
+
+                if (!port2) { // for the laser
+                    port2 = await navigator.serial.requestPort();
+                    await port2.open({ baudRate: 9600 });
+                }
+
+                isRunning = true;
+                document.getElementById('startMeasurement').textContent = 'Stop Measurement';
+                continuousMeasurement();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error accessing serial port. Make sure the device is connected and the port is available.');
+                isRunning = false;
+                document.getElementById('startMeasurement').textContent = 'Start Measurement';
+            }
+        }
+
+        // Stop measurement function
+        async function stopMeasurement() {
+            isRunning = false;
+        }
+
+        // Toggle measurement
+        async function toggleMeasurement() {
+            if (isRunning) {
+                await stopMeasurement();
+            } else {
+                await startMeasurement();
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            document.getElementById('startMeasurement').addEventListener('click', toggleMeasurement);
+        });
+    </script>
+</body>
+</html> 
