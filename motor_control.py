@@ -63,16 +63,18 @@ class laser:
     def disconnect(self):
         self.ser.close()
 
-motor_ins = motor(port = '/dev/ttyUSB0', baud_rate = 115200)
-laser_ins = laser(port = '/dev/ttyUSB1', baud_rate = 9600)
+if __name__ == "__main__":
 
-for i in range(0, 361, 5):
-    motor_ins.move_to(i)
-    print(laser_ins.get_distance())
+    motor_ins = motor(port = '/dev/ttyUSB0', baud_rate = 115200)
+    laser_ins = laser(port = '/dev/ttyUSB1', baud_rate = 9600)
 
-motor_ins.disconnect()
-laser_ins.disconnect()
-# data_receive = ser.readall()
-# # 按十六进制打印接收到的数据
-# print(data_receive)
-# hex_str = ' '.join(f'0x{b:02X}' for b in data_receive)
+    for i in range(0, 361, 5):
+        motor_ins.move_to(i)
+        print(laser_ins.get_distance())
+
+    motor_ins.disconnect()
+    laser_ins.disconnect()
+    # data_receive = ser.readall()
+    # # 按十六进制打印接收到的数据
+    # print(data_receive)
+    # hex_str = ' '.join(f'0x{b:02X}' for b in data_receive)
