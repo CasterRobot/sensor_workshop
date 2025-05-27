@@ -3,6 +3,7 @@ import numpy as np
 from serial_reading import *
 from data_processing import *
 from motor_control import *
+import customtkinter as ctk
 
 class PlottingGUI:
     def __init__(self, master):
@@ -46,45 +47,75 @@ class PlottingGUI:
         self.control_frame.pack(side=tk.RIGHT, padx=10)
 
         # Labels and text boxes for values
-        tk.Label(self.control_frame, text="Measure:").pack(anchor=tk.W)
+        tk.Label(self.control_frame, text="Diameter:").pack(anchor=tk.W)
         self.measure_value = tk.Entry(self.control_frame, width=10)
         self.measure_value.pack(pady=5)
-        self.measure_value.insert(0, "Hidden")
+        self.measure_value.insert(0, "Diameter")
 
-        tk.Label(self.control_frame, text="Filtered:").pack(anchor=tk.W)
-        self.filtered_value = tk.Entry(self.control_frame, width=10)
-        self.filtered_value.pack(pady=5)
-        self.filtered_value.insert(0, "Hidden")
+        # tk.Label(self.control_frame, text="Filtered:").pack(anchor=tk.W)
+        # self.filtered_value = tk.Entry(self.control_frame, width=10)
+        # self.filtered_value.pack(pady=5)
+        # self.filtered_value.insert(0, "Hidden")
 
-        tk.Label(self.control_frame, text="Tangent:").pack(anchor=tk.W)
-        self.tangent_value = tk.Entry(self.control_frame, width=10)
-        self.tangent_value.pack(pady=5)
-        self.tangent_value.insert(0, "Hidden")
+        # tk.Label(self.control_frame, text="Tangent:").pack(anchor=tk.W)
+        # self.tangent_value = tk.Entry(self.control_frame, width=10)
+        # self.tangent_value.pack(pady=5)
+        # self.tangent_value.insert(0, "Hidden")
 
-        # Frame for sliders
-        self.slider_frame = tk.Frame(master)
-        self.slider_frame.pack(side=tk.RIGHT, padx=10)
+        self.data_0_switch = ctk.CTkSwitch(master, text="Measure 0", command=self.data_0_on_off)
+        self.data_0_switch.pack(pady=5)
 
-        # Cutoff frequency slider
-        self.cutoff_label = tk.Label(self.slider_frame, text="Cutoff Frequency:")
-        self.cutoff_label.pack(anchor=tk.W)
+        self.data_1_switch = ctk.CTkSwitch(master, text="Measure 1", command=self.data_1_on_off)
+        self.data_1_switch.pack(pady=5)
 
-        self.cutoff_slider = tk.Scale(self.slider_frame, from_=1e-5, to=5, orient=tk.HORIZONTAL, resolution=0.01, command=self.update_cutoff)
-        self.cutoff_slider.pack(fill=tk.X)
+        self.data_2_switch = ctk.CTkSwitch(master, text="Measure 2", command=self.data_2_on_off)
+        self.data_2_switch.pack(pady=5)
 
-        # Sampling frequency slider
-        self.fs_label = tk.Label(self.slider_frame, text="Sampling Frequency (fs):")
-        self.fs_label.pack(anchor=tk.W)
+        self.data_3_switch = ctk.CTkSwitch(master, text="Measure 3", command=self.data_3_on_off)
+        self.data_3_switch.pack(pady=5)
 
-        self.fs_slider = tk.Scale(self.slider_frame, from_=1e-5, to=10, orient=tk.HORIZONTAL, resolution=0.01, command=self.update_fs)
-        self.fs_slider.pack(fill=tk.X)
+        self.data_4_switch = ctk.CTkSwitch(master, text="Measure 4", command=self.data_4_on_off)
+        self.data_4_switch.pack(pady=5)
 
-        # Labels for current values
-        self.current_cutoff = tk.Label(self.slider_frame, text="Current Cutoff: 0")
-        self.current_cutoff.pack(anchor=tk.W)
+        self.data_5_switch = ctk.CTkSwitch(master, text="Measure 5", command=self.data_5_on_off)
+        self.data_5_switch.pack(pady=5)
 
-        self.current_fs = tk.Label(self.slider_frame, text="Current fs: 1")
-        self.current_fs.pack(anchor=tk.W)
+        self.data_6_switch = ctk.CTkSwitch(master, text="Measure 6", command=self.data_6_on_off)
+        self.data_6_switch.pack(pady=5)
+
+        self.data_7_switch = ctk.CTkSwitch(master, text="Measure 7", command=self.data_7_on_off)
+        self.data_7_switch.pack(pady=5)
+
+        self.data_8_switch = ctk.CTkSwitch(master, text="Measure 8", command=self.data_8_on_off)
+        self.data_8_switch.pack(pady=5)
+
+        self.data_9_switch = ctk.CTkSwitch(master, text="Measure 9", command=self.data_9_on_off)
+        self.data_9_switch.pack(pady=5)
+
+        # # Frame for sliders
+        # self.slider_frame = tk.Frame(master)
+        # self.slider_frame.pack(side=tk.RIGHT, padx=10)
+
+        # # Cutoff frequency slider
+        # self.cutoff_label = tk.Label(self.slider_frame, text="Cutoff Frequency:")
+        # self.cutoff_label.pack(anchor=tk.W)
+
+        # self.cutoff_slider = tk.Scale(self.slider_frame, from_=1e-5, to=5, orient=tk.HORIZONTAL, resolution=0.01, command=self.update_cutoff)
+        # self.cutoff_slider.pack(fill=tk.X)
+
+        # # Sampling frequency slider
+        # self.fs_label = tk.Label(self.slider_frame, text="Sampling Frequency (fs):")
+        # self.fs_label.pack(anchor=tk.W)
+
+        # self.fs_slider = tk.Scale(self.slider_frame, from_=1e-5, to=10, orient=tk.HORIZONTAL, resolution=0.01, command=self.update_fs)
+        # self.fs_slider.pack(fill=tk.X)
+
+        # # Labels for current values
+        # self.current_cutoff = tk.Label(self.slider_frame, text="Current Cutoff: 0")
+        # self.current_cutoff.pack(anchor=tk.W)
+
+        # self.current_fs = tk.Label(self.slider_frame, text="Current fs: 1")
+        # self.current_fs.pack(anchor=tk.W)
 
         self.plotting_state = {
             "measure": False,
@@ -114,7 +145,22 @@ class PlottingGUI:
                         9:"pink"
         }
 
+        self.data_plot = {
+                        0:False, 
+                        1:False, 
+                        2:False, 
+                        3:False, 
+                        4:False,
+                        5:False, 
+                        6:False, 
+                        7:False, 
+                        8:False, 
+                        9:False
+        }
+
         # self.open_serial()
+
+        self.axes_drawn = False
 
     def open_serial(self):
         # Initialize serial connection
@@ -155,7 +201,7 @@ class PlottingGUI:
         angle_list = []
         dis_list = []
         inds = []
-        for i in range(0, 359, 30):
+        for i in range(0, 359, 90):
             self.motor_ins.move_to(i)
             inds.append(i)
             dis = self.laser_ins.get_distance()
@@ -185,37 +231,26 @@ class PlottingGUI:
             angle_dis.append([a, d, x, y])
         self.angle_dis_dict[self.data_id] = angle_dis
 
-    def update_cutoff(self, value):
-        self.current_cutoff.config(text=f"Current Cutoff: {value}")
-        self.cutoff = float(value)
-        self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
-        self.clear_plot()
+    # def update_cutoff(self, value):
+    #     self.current_cutoff.config(text=f"Current Cutoff: {value}")
+    #     self.cutoff = float(value)
+    #     self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
+    #     self.clear_plot()
 
-    def update_fs(self, value):
-        self.current_fs.config(text=f"Current fs: {value}")
-        self.fs = float(value)
-        self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
-        self.clear_plot()
+    # def update_fs(self, value):
+    #     self.current_fs.config(text=f"Current fs: {value}")
+    #     self.fs = float(value)
+    #     self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
+    #     self.clear_plot()
 
     def toggle_measure(self):
         self.data_id += 1
         self.is_update = True
         self.plotting_state["measure"] = True #not self.plotting_state["measure"]
+        self.data_plot[self.data_id] = True
         self.measure_once()
         
         self.toggle_plot(self.angle_dis_dict[self.data_id], "measure", self.colors[self.data_id], self.plotting_state["measure"])
-        self.update_plot()
-        
-
-    def toggle_filtered(self):
-        self.plotting_state["filtered"] = not self.plotting_state["filtered"]
-        self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
-        self.toggle_plot(self.filtered_data, "Filtered", 'green', self.plotting_state["filtered"])
-        self.update_plot()
-
-    def toggle_tangent(self):
-        self.plotting_state["tangent"] = not self.plotting_state["tangent"]
-        self.toggle_plot(np.tan, "Tangent Wave", 'red', self.plotting_state["tangent"], limit_y=True)
         self.update_plot()
 
     def toggle_plot(self, func, title, color, show, limit_y=False):
@@ -225,17 +260,12 @@ class PlottingGUI:
             self.clear_plot()
     
     def update_plot(self, limit_y=False):
-        # self.clear_canvas()
+        self.clear_canvas()
         
         if self.plotting_state["measure"]:
-            self.plot_function(self.angle_dis_dict[self.data_id], "Measure", self.colors[self.data_id], limit_y)
-        
-        if self.plotting_state["filtered"]:
-            self.filtered_data = lowpass_filter(self.current_data, cutoff=self.cutoff, fs=self.fs, order=6)
-            self.plot_function(self.filtered_data, "Filtered", 'green', limit_y)
-        
-        if self.plotting_state["tangent"]:
-            self.plot_function(np.tan, "Tangent Wave", 'red', limit_y)
+            for d_i in range(10):
+                if self.data_plot[d_i]:
+                    self.plot_function(self.angle_dis_dict[d_i], "Measure", self.colors[d_i], limit_y)
 
         if self.is_update:
             if self.plotting_state["measure"] or self.plotting_state["filtered"] or self.plotting_state["tangent"]:
@@ -258,9 +288,8 @@ class PlottingGUI:
             x_pos = margin + (x_value - x_min) / (x_max - x_min) * (width - 2 * margin) - margin
             self.canvas.create_text(x_pos, center_y, text=f"{x_value:.2f}", anchor='e', font=("Arial", 10))
 
-    def plot_function(self, data, title, color, limit_y=False):
+    def plot_function(self, data, title, color, axis=False):
         data = np.array(data)
-
         width = 400
         height = 400
         center_x = width // 2
@@ -268,17 +297,6 @@ class PlottingGUI:
 
         margin = 20
 
-        # Draw axes
-        self.canvas.create_line(0, center_y, width, center_y, fill='black', width=2)  # x-axis
-        self.canvas.create_line(center_x, 0, center_x, height, fill='black', width=2)  # y-axis
-
-        # Draw lines in negative x and y
-        self.canvas.create_line(center_x, center_y, 0, center_y, fill='black', dash=(4, 2))  # Negative x
-        self.canvas.create_line(center_x, center_y, center_x, 0, fill='black', dash=(4, 2))  # Negative y
-
-        # # Draw diagonal lines
-        # self.canvas.create_line(center_x, center_y, width, height, fill='green')  # Positive diagonal
-        # self.canvas.create_line(center_x, center_y, 0, 0, fill='purple')  # Negative diagonal
 
         # Plotting the function
         print("the data are: ", data)
@@ -297,13 +315,24 @@ class PlottingGUI:
         print(y_min,y_max )
 
         
+        if not hasattr(self, 'axes_drawn'):
+            
+            # Draw axes
+            self.canvas.create_line(0, center_y, width, center_y, fill='black', width=2)  # x-axis
+            self.canvas.create_line(center_x, 0, center_x, height, fill='black', width=2)  # y-axis
 
-        # if not hasattr(self, 'axes_drawn'):
-        # self.canvas.create_line(-1 * width + margin, -1 * height + margin, width - margin, height - margin, fill='black')  # X-axis
-        # # self.canvas.create_line(margin, margin, margin, height - margin, fill='black')  # Y-axis
-        self.draw_y_axis_labels(center_x, center_y, margin=margin, height=height, y_min=y_min, y_max=y_max)
-        self.draw_x_axis_labels(center_x, center_y, margin=margin, width=width, x_min=x_min, x_max=x_max)
-        self.axes_drawn = True
+            # Draw lines in negative x and y
+            self.canvas.create_line(center_x, center_y, 0, center_y, fill='black', dash=(4, 2))  # Negative x
+            self.canvas.create_line(center_x, center_y, center_x, 0, fill='black', dash=(4, 2))  # Negative y
+
+            # # Draw diagonal lines
+            # self.canvas.create_line(center_x, center_y, width, height, fill='green')  # Positive diagonal
+            # self.canvas.create_line(center_x, center_y, 0, 0, fill='purple')  # Negative diagonal
+            # self.canvas.create_line(-1 * width + margin, -1 * height + margin, width - margin, height - margin, fill='black')  # X-axis
+            # # self.canvas.create_line(margin, margin, margin, height - margin, fill='black')  # Y-axis
+            self.draw_y_axis_labels(center_x, center_y, margin=margin, height=height, y_min=y_min, y_max=y_max)
+            self.draw_x_axis_labels(center_x, center_y, margin=margin, width=width, x_min=x_min, x_max=x_max)
+            self.axes_drawn = True
 
         # Draw points using raw x and y values
         point_radius = 3  # Radius for the points
@@ -352,16 +381,85 @@ class PlottingGUI:
         #     canvas_y = center_y - y  # Invert y-axis for canvas
         #     self.canvas.create_oval(canvas_x - 3, canvas_y - 3, canvas_x + 3, canvas_y + 3, fill='black')
 
-    
+    def data_0_on_off(self):
+        if self.data_0_switch.get():
+            self.data_plot[0] =True
+        else:
+            self.data_plot[0] =False
+        self.update_plot()
+
+    def data_1_on_off(self):
+        if self.data_1_switch.get():
+            self.data_plot[1] =True
+        else:
+            self.data_plot[1] =False
+        self.update_plot()
+
+    def data_2_on_off(self):
+        if self.data_2_switch.get():
+            self.data_plot[2] =True
+        else:
+            self.data_plot[2] =False
+        self.update_plot()
+
+    def data_3_on_off(self):
+        if self.data_3_switch.get():
+            self.data_plot[3] =True
+        else:
+            self.data_plot[3] =False
+        self.update_plot()
+
+    def data_4_on_off(self):
+        if self.data_4_switch.get():
+            self.data_plot[4] =True
+        else:
+            self.data_plot[4] =False
+        self.update_plot()
+
+    def data_5_on_off(self):
+        if self.data_5_switch.get():
+            self.data_plot[5] =True
+        else:
+            self.data_plot[5] =False
+        self.update_plot()
+
+    def data_6_on_off(self):
+        if self.data_6_switch.get():
+            self.data_plot[6] =True
+        else:
+            self.data_plot[6] =False
+        self.update_plot()
+
+    def data_7_on_off(self):
+        if self.data_7_switch.get():
+            self.data_plot[7] =True
+        else:
+            self.data_plot[7] =False
+        self.update_plot()
+
+    def data_8_on_off(self):
+        if self.data_8_switch.get():
+            self.data_plot[8] =True
+        else:
+            self.data_plot[8] =False
+        self.update_plot()
+
+    def data_9_on_off(self):
+        if self.data_9_switch.get():
+            self.data_plot[9] =True
+        else:
+            self.data_plot[9] =False
+        self.update_plot()
+
     def clear_plot(self):
         # Clear specific plot by redrawing the canvas and replotting the others
         self.clear_canvas()
         if self.plotting_state["measure"]:
             self.plot_function(self.current_data, "Measure", self.colors[self.data_id])
-        if self.plotting_state["filtered"]:
-            self.plot_function(self.filtered_data, "Filtered", 'green')
-        if self.plotting_state["tangent"]:
-            self.plot_function(np.tan, "Tangent Wave", 'red', limit_y=True)
+        # if self.plotting_state["filtered"]:
+        #     self.plot_function(self.filtered_data, "Filtered", 'green')
+        # if self.plotting_state["tangent"]:
+        #     self.plot_function(np.tan, "Tangent Wave", 'red', limit_y=True)
 
     def clear_canvas(self):
         self.canvas.delete("all")  # Clear the canvas
@@ -372,12 +470,6 @@ class PlottingGUI:
         # Update the text boxes with current plot status
         self.measure_value.delete(0, tk.END)
         self.measure_value.insert(0, "Visible" if self.plotting_state["measure"] else "Hidden")
-        
-        self.filtered_value.delete(0, tk.END)
-        self.filtered_value.insert(0, "Visible" if self.plotting_state["filtered"] else "Hidden")
-        
-        self.tangent_value.delete(0, tk.END)
-        self.tangent_value.insert(0, "Visible" if self.plotting_state["tangent"] else "Hidden")
 
     def stop_update(self):
         self.is_update = not self.is_update  # Stop updating the plot
@@ -389,6 +481,8 @@ class PlottingGUI:
             print("Serials closed.")
 
     def exit_application(self):
+        self.close_serial()
+        print("Serials closed.")
         # self.ser.close()
         # print("Serial exits")
         self.master.quit()  # Close the application
