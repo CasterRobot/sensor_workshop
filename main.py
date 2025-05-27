@@ -22,17 +22,18 @@ class PlottingGUI:
         self.button_frame.pack(side=tk.BOTTOM)
 
         # Buttons to plot different functions
-        self.plot_button1 = tk.Button(self.button_frame, text="Measure", command=self.toggle_measure)
-        self.plot_button1.pack(side=tk.LEFT, padx=5)
-
-        self.plot_button2 = tk.Button(self.button_frame, text="Filtered data", command=self.toggle_filtered)
-        self.plot_button2.pack(side=tk.LEFT, padx=5)
-
-        self.plot_button3 = tk.Button(self.button_frame, text="Else", command=self.toggle_tangent)
-        self.plot_button3.pack(side=tk.LEFT, padx=5)
 
         self.stop_button = tk.Button(self.button_frame, text="Stop/Start", command=self.stop_update)
         self.stop_button.pack(side=tk.LEFT, padx=5)
+
+        self.plot_button1 = tk.Button(self.button_frame, text="Measure", command=self.toggle_measure)
+        self.plot_button1.pack(side=tk.LEFT, padx=5)
+
+        # self.plot_button2 = tk.Button(self.button_frame, text="Filtered data", command=self.toggle_filtered)
+        # self.plot_button2.pack(side=tk.LEFT, padx=5)
+
+        # self.plot_button3 = tk.Button(self.button_frame, text="Else", command=self.toggle_tangent)
+        # self.plot_button3.pack(side=tk.LEFT, padx=5)
 
         self.clear_button = tk.Button(self.button_frame, text="Clear All Plots", command=self.clear_canvas)
         self.clear_button.pack(side=tk.LEFT, padx=5)
@@ -154,7 +155,7 @@ class PlottingGUI:
         angle_list = []
         dis_list = []
         inds = []
-        for i in range(0, 359, 60):
+        for i in range(0, 359, 30):
             self.motor_ins.move_to(i)
             inds.append(i)
             dis = self.laser_ins.get_distance()
@@ -241,21 +242,21 @@ class PlottingGUI:
                 self.update_value_display()
                 self.master.after(1000, self.update_plot)  # Update every 100 ms
 
-    def draw_y_axis_labels(self, margin, height, padding, y_min, y_max):
+    def draw_y_axis_labels(self, center_x, center_y, margin, height, y_min, y_max):
         # Draw y-axis labels based on defined y_min and y_max
         y_ticks = 5  # Number of ticks
         for i in range(y_ticks + 1):
             y_value = y_min + i * (y_max - y_min) / y_ticks
-            y_pos = height - (y_value - y_min) / (y_max - y_min) * (height - 2 * margin) - margin
-            self.canvas.create_text(margin - 3, y_pos, text=f"{y_value:.2f}", anchor='e', font=("Arial", 10))
+            y_pos = margin + (y_value - y_min) / (y_max - y_min) * (height - 2 * margin) - margin
+            self.canvas.create_text(center_x, y_pos, text=f"{y_value:.2f}", anchor='e', font=("Arial", 10))
 
-    def draw_x_axis_labels(self, margin, width, padding, x_min, x_max):
+    def draw_x_axis_labels(self, center_x, center_y, margin, width, x_min, x_max):
         # Draw y-axis labels based on defined y_min and y_max
         x_ticks = 5  # Number of ticks
         for i in range(x_ticks + 1):
             x_value = x_min + i * (x_max - x_min) / x_ticks
-            x_pos = width - (x_value - x_min) / (x_max - x_min) * (width - 2 * margin) - margin
-            self.canvas.create_text(margin - 3, x_pos, text=f"{x_value:.2f}", anchor='e', font=("Arial", 10))
+            x_pos = margin + (x_value - x_min) / (x_max - x_min) * (width - 2 * margin) - margin
+            self.canvas.create_text(x_pos, center_y, text=f"{x_value:.2f}", anchor='e', font=("Arial", 10))
 
     def plot_function(self, data, title, color, limit_y=False):
         data = np.array(data)
@@ -265,7 +266,7 @@ class PlottingGUI:
         center_x = width // 2
         center_y = height // 2
 
-        margin = 0
+        margin = 20
 
         # Draw axes
         self.canvas.create_line(0, center_y, width, center_y, fill='black', width=2)  # x-axis
@@ -287,11 +288,11 @@ class PlottingGUI:
 
         print(x_values, y_values)
 
-        x_max = np.max(x_values)*1.2
-        x_min = np.min(x_values)*1.2
+        x_max = np.max(x_values)*2
+        x_min = np.min(x_values)*2
 
-        y_max = np.max(y_values)*1.2
-        y_min = np.min(y_values)*1.2
+        y_max = np.max(y_values)*2
+        y_min = np.min(y_values)*2
 
         print(y_min,y_max )
 
@@ -300,8 +301,8 @@ class PlottingGUI:
         # if not hasattr(self, 'axes_drawn'):
         # self.canvas.create_line(-1 * width + margin, -1 * height + margin, width - margin, height - margin, fill='black')  # X-axis
         # # self.canvas.create_line(margin, margin, margin, height - margin, fill='black')  # Y-axis
-        # self.draw_y_axis_labels(margin, height, margin, y_min=y_min, y_max=y_max)
-        # #self.draw_x_axis_labels(margin, width, margin, x_min=y_min, x_max=x_max)
+        self.draw_y_axis_labels(center_x, center_y, margin=margin, height=height, y_min=y_min, y_max=y_max)
+        self.draw_x_axis_labels(center_x, center_y, margin=margin, width=width, x_min=x_min, x_max=x_max)
         self.axes_drawn = True
 
         # Draw points using raw x and y values

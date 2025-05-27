@@ -66,14 +66,14 @@ class laser:
 if __name__ == "__main__":
 
     motor_ins = motor(port = '/dev/ttyUSB0', baud_rate = 115200)
-    laser_ins = laser(port = '/dev/ttyUSB1', baud_rate = 9600)
+    # laser_ins = laser(port = '/dev/ttyUSB1', baud_rate = 9600)
 
-    for i in range(0, 361, 5):
+    for i in range(0, 361, 90):
         motor_ins.move_to(i)
-        print(laser_ins.get_distance())
+        # print(laser_ins.get_distance())
 
     motor_ins.disconnect()
-    laser_ins.disconnect()
+    #laser_ins.disconnect()
     # data_receive = ser.readall()
     # # 按十六进制打印接收到的数据
     # print(data_receive)
