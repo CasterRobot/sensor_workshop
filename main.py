@@ -4,6 +4,7 @@ from serial_reading import *
 from data_processing import *
 from motor_control import *
 import customtkinter as ctk
+from tkinter import ttk
 
 class PlottingGUI:
     def __init__(self, master):
@@ -43,14 +44,13 @@ class PlottingGUI:
         self.exit_button.pack(side=tk.LEFT, padx=5)
 
         # Frame for text boxes and labels
-        self.control_frame = tk.Frame(master)
-        self.control_frame.pack(side=tk.RIGHT, padx=10)
+        
 
-        # Labels and text boxes for values
-        tk.Label(self.control_frame, text="Diameter:").pack(anchor=tk.W)
-        self.measure_value = tk.Entry(self.control_frame, width=10)
-        self.measure_value.pack(pady=5)
-        self.measure_value.insert(0, "Diameter")
+        # # Labels and text boxes for values
+        # tk.Label(self.control_frame, text="Diameter:").pack(anchor=tk.W)
+        # self.measure_value = tk.Entry(self.control_frame, width=10)
+        # self.measure_value.pack(pady=5)
+        # self.measure_value.insert(0, "Diameter")
 
         # tk.Label(self.control_frame, text="Filtered:").pack(anchor=tk.W)
         # self.filtered_value = tk.Entry(self.control_frame, width=10)
@@ -62,35 +62,263 @@ class PlottingGUI:
         # self.tangent_value.pack(pady=5)
         # self.tangent_value.insert(0, "Hidden")
 
-        self.data_0_switch = ctk.CTkSwitch(master, text="Measure 0", command=self.data_0_on_off)
-        self.data_0_switch.pack(pady=5)
+        NUM_sampling = ["4", "6", "10", "30", "90", "180", "360"]
 
-        self.data_1_switch = ctk.CTkSwitch(master, text="Measure 1", command=self.data_1_on_off)
-        self.data_1_switch.pack(pady=5)
+        self.selection_var0 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var1 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var2 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var3 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var4 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var5 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var6 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var7 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var8 = tk.StringVar(value=NUM_sampling[0])
+        self.selection_var9 = tk.StringVar(value=NUM_sampling[0])
 
-        self.data_2_switch = ctk.CTkSwitch(master, text="Measure 2", command=self.data_2_on_off)
-        self.data_2_switch.pack(pady=5)
+        self.control_frame_0 = tk.Frame(master)
+        self.control_frame_0.pack(side=tk.TOP, padx=5)
 
-        self.data_3_switch = ctk.CTkSwitch(master, text="Measure 3", command=self.data_3_on_off)
-        self.data_3_switch.pack(pady=5)
+        self.selection_menu_0 = ttk.Combobox(
+            self.control_frame_0, 
+            textvariable=self.selection_var0,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_0.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_0.bind("<<ComboboxSelected>>", self.on_selection_change_0)
 
-        self.data_4_switch = ctk.CTkSwitch(master, text="Measure 4", command=self.data_4_on_off)
-        self.data_4_switch.pack(pady=5)
+        self.data_0_switch = ctk.CTkSwitch(self.control_frame_0, text="Measure 0", command=self.data_0_on_off)
+        self.data_0_switch.pack(side=tk.LEFT, pady=5)
 
-        self.data_5_switch = ctk.CTkSwitch(master, text="Measure 5", command=self.data_5_on_off)
-        self.data_5_switch.pack(pady=5)
+        # Labels and text boxes for values
+        self.measure_value_label_0 = tk.Label(self.control_frame_0, text="      ")
+        self.measure_value_label_0.pack(side=tk.LEFT, pady=5)
+        self.measure_value_0 = tk.Entry(self.control_frame_0, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_0.pack(side=tk.LEFT, pady=1)
+        self.measure_value_0.insert(0, "Diameter")
 
-        self.data_6_switch = ctk.CTkSwitch(master, text="Measure 6", command=self.data_6_on_off)
-        self.data_6_switch.pack(pady=5)
+        self.control_frame_1 = tk.Frame(master)
+        self.control_frame_1.pack(side=tk.TOP, padx=5)
 
-        self.data_7_switch = ctk.CTkSwitch(master, text="Measure 7", command=self.data_7_on_off)
-        self.data_7_switch.pack(pady=5)
+        self.selection_menu_1 = ttk.Combobox(
+            self.control_frame_1, 
+            textvariable=self.selection_var1,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_1.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_1.bind("<<ComboboxSelected>>", self.on_selection_change_1)
 
-        self.data_8_switch = ctk.CTkSwitch(master, text="Measure 8", command=self.data_8_on_off)
-        self.data_8_switch.pack(pady=5)
+        self.data_1_switch = ctk.CTkSwitch(self.control_frame_1, text="Measure 1", command=self.data_1_on_off)
+        self.data_1_switch.pack(side=tk.LEFT, pady=5)
 
-        self.data_9_switch = ctk.CTkSwitch(master, text="Measure 9", command=self.data_9_on_off)
-        self.data_9_switch.pack(pady=5)
+        self.measure_value_label_1 = tk.Label(self.control_frame_1, text="      ")
+        self.measure_value_label_1.pack(side=tk.LEFT, pady=5)
+        self.measure_value_1 = tk.Entry(self.control_frame_1, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_1.pack(side=tk.LEFT, pady=5)
+        self.measure_value_1.insert(0, "Diameter")
+
+        self.control_frame_2 = tk.Frame(master)
+        self.control_frame_2.pack(side=tk.TOP, padx=5)
+
+
+        self.selection_menu_2 = ttk.Combobox(
+            self.control_frame_2, 
+            textvariable=self.selection_var2,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_2.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_2.bind("<<ComboboxSelected>>", self.on_selection_change_2)
+
+        self.data_2_switch = ctk.CTkSwitch(self.control_frame_2, text="Measure 2", command=self.data_2_on_off)
+        self.data_2_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_2 = tk.Label(self.control_frame_2, text="      ")
+        self.measure_value_label_2.pack(side=tk.LEFT, pady=5)
+        self.measure_value_2 = tk.Entry(self.control_frame_2, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_2.pack(side=tk.LEFT, pady=5)
+        self.measure_value_2.insert(0, "Diameter")
+
+        self.control_frame_3 = tk.Frame(master)
+        self.control_frame_3.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_3 = ttk.Combobox(
+            self.control_frame_3, 
+            textvariable=self.selection_var3,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_3.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_3.bind("<<ComboboxSelected>>", self.on_selection_change_3)
+
+        self.data_3_switch = ctk.CTkSwitch(self.control_frame_3, text="Measure 3", command=self.data_3_on_off)
+        self.data_3_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_3 = tk.Label(self.control_frame_3, text="      ")
+        self.measure_value_label_3.pack(side=tk.LEFT, pady=5)
+        self.measure_value_3 = tk.Entry(self.control_frame_3, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_3.pack(side=tk.LEFT, pady=5)
+        self.measure_value_3.insert(0, "Diameter")
+
+        self.control_frame_4 = tk.Frame(master)
+        self.control_frame_4.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_4 = ttk.Combobox(
+            self.control_frame_4, 
+            textvariable=self.selection_var4,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_4.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_4.bind("<<ComboboxSelected>>", self.on_selection_change_4)
+
+        self.data_4_switch = ctk.CTkSwitch(self.control_frame_4, text="Measure 4", command=self.data_4_on_off)
+        self.data_4_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_4 = tk.Label(self.control_frame_4, text="      ")
+        self.measure_value_label_4.pack(side=tk.LEFT, pady=5)
+        self.measure_value_4 = tk.Entry(self.control_frame_4, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_4.pack(side=tk.LEFT, pady=5)
+        self.measure_value_4.insert(0, "Diameter")
+
+        self.control_frame_5 = tk.Frame(master)
+        self.control_frame_5.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_5 = ttk.Combobox(
+            self.control_frame_5, 
+            textvariable=self.selection_var5,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_5.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_5.bind("<<ComboboxSelected>>", self.on_selection_change_5)
+
+        self.data_5_switch = ctk.CTkSwitch(self.control_frame_5, text="Measure 5", command=self.data_5_on_off)
+        self.data_5_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_5 = tk.Label(self.control_frame_5, text="      ")
+        self.measure_value_label_5.pack(side=tk.LEFT, pady=5)
+        self.measure_value_5 = tk.Entry(self.control_frame_5, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_5.pack(side=tk.LEFT, pady=5)
+        self.measure_value_5.insert(0, "Diameter")
+
+        self.control_frame_6 = tk.Frame(master)
+        self.control_frame_6.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_6 = ttk.Combobox(
+            self.control_frame_6, 
+            textvariable=self.selection_var6,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_6.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_6.bind("<<ComboboxSelected>>", self.on_selection_change_6)
+
+        self.data_6_switch = ctk.CTkSwitch(self.control_frame_6, text="Measure 6", command=self.data_6_on_off)
+        self.data_6_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_6 = tk.Label(self.control_frame_6, text="      ")
+        self.measure_value_label_6.pack(side=tk.LEFT, pady=5)
+        self.measure_value_6 = tk.Entry(self.control_frame_6, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_6.pack(side=tk.LEFT, pady=5)
+        self.measure_value_6.insert(0, "Diameter")
+
+        self.control_frame_7 = tk.Frame(master)
+        self.control_frame_7.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_7 = ttk.Combobox(
+            self.control_frame_7, 
+            textvariable=self.selection_var7,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_7.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_7.bind("<<ComboboxSelected>>", self.on_selection_change_7)
+
+        self.data_7_switch = ctk.CTkSwitch(self.control_frame_7, text="Measure 7", command=self.data_7_on_off)
+        self.data_7_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_7 = tk.Label(self.control_frame_7, text="      ")
+        self.measure_value_label_7.pack(side=tk.LEFT, pady=5)
+        self.measure_value_7 = tk.Entry(self.control_frame_7, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_7.pack(side=tk.LEFT, pady=5)
+        self.measure_value_7.insert(0, "Diameter")
+
+        self.control_frame_8 = tk.Frame(master)
+        self.control_frame_8.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_8 = ttk.Combobox(
+            self.control_frame_8, 
+            textvariable=self.selection_var8,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_8.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_8.bind("<<ComboboxSelected>>", self.on_selection_change_8)
+
+        self.data_8_switch = ctk.CTkSwitch(self.control_frame_8, text="Measure 8", command=self.data_8_on_off)
+        self.data_8_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_8 = tk.Label(self.control_frame_8, text="      ")
+        self.measure_value_label_8.pack(side=tk.LEFT, pady=5)
+        self.measure_value_8 = tk.Entry(self.control_frame_8, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_8.pack(side=tk.LEFT, pady=5)
+        self.measure_value_8.insert(0, "Diameter")
+
+        self.control_frame_9 = tk.Frame(master)
+        self.control_frame_9.pack(side=tk.TOP, padx=5)
+
+        self.selection_menu_9 = ttk.Combobox(
+            self.control_frame_9, 
+            textvariable=self.selection_var9,
+            values=NUM_sampling,
+            state="readonly",  # Prevent typing
+            width=12
+        )
+        self.selection_menu_9.pack(side=tk.LEFT, pady=5)
+        self.selection_menu_0.bind("<<ComboboxSelected>>", self.on_selection_change_9)
+
+        self.data_9_switch = ctk.CTkSwitch(self.control_frame_9, text="Measure 9", command=self.data_9_on_off)
+        self.data_9_switch.pack(side=tk.LEFT, pady=5)
+
+        self.measure_value_label_9 = tk.Label(self.control_frame_9, text="      ")
+        self.measure_value_label_9.pack(side=tk.LEFT, pady=5)
+        self.measure_value_9 = tk.Entry(self.control_frame_9, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_9.pack(side=tk.LEFT, pady=5)
+        self.measure_value_9.insert(0, "Diameter")
+
+
+        self.control_frame_ave = tk.Frame(master)
+        self.control_frame_ave.pack(side=tk.TOP, padx=5)
+
+
+        self.measure_value_label_ave = tk.Label(self.control_frame_ave, text="Average:  ")
+        self.measure_value_label_ave.pack(side=tk.LEFT, pady=5)
+        self.measure_value_ave = tk.Entry(self.control_frame_ave, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_ave.pack(side=tk.LEFT, pady=5)
+        self.measure_value_ave.insert(0, "Diameter")
+
 
         # # Frame for sliders
         # self.slider_frame = tk.Frame(master)
@@ -158,6 +386,32 @@ class PlottingGUI:
                         9:False
         }
 
+        self.measure_points = {
+                        0: 6, 
+                        1: 6, 
+                        2: 6, 
+                        3: 6, 
+                        4: 6,
+                        5: 6, 
+                        6: 6, 
+                        7: 6, 
+                        8: 6, 
+                        9: 6
+        }
+
+        self.diameters = {
+                        0: 6, 
+                        1: 6, 
+                        2: 6, 
+                        3: 6, 
+                        4: 6,
+                        5: 6, 
+                        6: 6, 
+                        7: 6, 
+                        8: 6, 
+                        9: 6
+        }
+
         # self.open_serial()
 
         self.axes_drawn = False
@@ -197,11 +451,12 @@ class PlottingGUI:
         return filtered_ind, filtered_data
 
 
-    def measure_once(self):
+    def measure_once(self, num_points):
         angle_list = []
         dis_list = []
         inds = []
-        for i in range(0, 359, 90):
+        internal = 360 // num_points
+        for i in range(0, 359, internal):
             self.motor_ins.move_to(i)
             inds.append(i)
             dis = self.laser_ins.get_distance()
@@ -222,6 +477,8 @@ class PlottingGUI:
             angle_list.append(i)
             dis_list.append(dis)
         angle_list, dis_list = self.outlier_remove(np.array(angle_list), np.array(dis_list))
+
+        self.diameters[self.data_id] = np.average(dis_list) * 2
 
         angle_dis = []
         for a, d in zip(angle_list, dis_list):
@@ -248,14 +505,16 @@ class PlottingGUI:
         self.is_update = True
         self.plotting_state["measure"] = True #not self.plotting_state["measure"]
         self.data_plot[self.data_id] = True
-        self.measure_once()
+        self.measure_once(self.measure_points[self.data_id])
         
         self.toggle_plot(self.angle_dis_dict[self.data_id], "measure", self.colors[self.data_id], self.plotting_state["measure"])
         self.update_plot()
+        self.update_value_display()
 
     def toggle_plot(self, func, title, color, show, limit_y=False):
         if show:
             self.plot_function(func, title, color, limit_y)
+            self.update_value_display()
         else:
             self.clear_plot()
     
@@ -387,6 +646,7 @@ class PlottingGUI:
         else:
             self.data_plot[0] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_1_on_off(self):
         if self.data_1_switch.get():
@@ -394,6 +654,7 @@ class PlottingGUI:
         else:
             self.data_plot[1] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_2_on_off(self):
         if self.data_2_switch.get():
@@ -401,6 +662,7 @@ class PlottingGUI:
         else:
             self.data_plot[2] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_3_on_off(self):
         if self.data_3_switch.get():
@@ -408,6 +670,7 @@ class PlottingGUI:
         else:
             self.data_plot[3] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_4_on_off(self):
         if self.data_4_switch.get():
@@ -415,6 +678,7 @@ class PlottingGUI:
         else:
             self.data_plot[4] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_5_on_off(self):
         if self.data_5_switch.get():
@@ -422,6 +686,7 @@ class PlottingGUI:
         else:
             self.data_plot[5] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_6_on_off(self):
         if self.data_6_switch.get():
@@ -429,6 +694,7 @@ class PlottingGUI:
         else:
             self.data_plot[6] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_7_on_off(self):
         if self.data_7_switch.get():
@@ -436,6 +702,7 @@ class PlottingGUI:
         else:
             self.data_plot[7] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_8_on_off(self):
         if self.data_8_switch.get():
@@ -443,6 +710,7 @@ class PlottingGUI:
         else:
             self.data_plot[8] =False
         self.update_plot()
+        self.update_value_display()
 
     def data_9_on_off(self):
         if self.data_9_switch.get():
@@ -450,6 +718,7 @@ class PlottingGUI:
         else:
             self.data_plot[9] =False
         self.update_plot()
+        self.update_value_display()
 
     def clear_plot(self):
         # Clear specific plot by redrawing the canvas and replotting the others
@@ -468,8 +737,53 @@ class PlottingGUI:
 
     def update_value_display(self):
         # Update the text boxes with current plot status
-        self.measure_value.delete(0, tk.END)
-        self.measure_value.insert(0, "Visible" if self.plotting_state["measure"] else "Hidden")
+        self.measure_value_0.delete(0, tk.END)
+        # self.measure_value.insert(0, "Visible" if self.plotting_state["measure"] else "Hidden")
+
+        self.measure_value_0.insert(0, self.diameters[0])
+
+        self.measure_value_1.delete(0, tk.END)
+        self.measure_value_1.insert(0, self.diameters[1])
+
+        self.measure_value_2.delete(0, tk.END)
+        self.measure_value_2.insert(0, self.diameters[2])
+
+        self.measure_value_3.delete(0, tk.END)
+        self.measure_value_3.insert(0, self.diameters[3])
+
+        self.measure_value_4.delete(0, tk.END)
+        self.measure_value_4.insert(0, self.diameters[4])
+
+        self.measure_value_5.delete(0, tk.END)
+        self.measure_value_5.insert(0, self.diameters[5])
+
+        self.measure_value_6.delete(0, tk.END)
+        self.measure_value_6.insert(0, self.diameters[6])
+
+        self.measure_value_7.delete(0, tk.END)
+        self.measure_value_7.insert(0, self.diameters[7])
+
+        self.measure_value_8.delete(0, tk.END)
+        self.measure_value_8.insert(0, self.diameters[8])
+
+        self.measure_value_9.delete(0, tk.END)
+        self.measure_value_9.insert(0, self.diameters[9])
+
+        self.update_ave()
+
+    def update_ave(self):
+        ave = 0
+        num = 0
+        for k in self.data_plot .keys():
+            if self.data_plot[k]:
+                ave += self.diameters[k]
+                num +=1
+
+        final_ave = ave / num
+
+        self.measure_value_ave.insert(0, final_ave)
+
+
 
     def stop_update(self):
         self.is_update = not self.is_update  # Stop updating the plot
@@ -486,6 +800,83 @@ class PlottingGUI:
         # self.ser.close()
         # print("Serial exits")
         self.master.quit()  # Close the application
+
+
+    def on_selection_change_0(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var0.get()
+
+        self.measure_points[0] = int(selected)
+        #result_label.config(text=f"Selected: {selected}")
+        
+        # # Update the label colors based on selection
+        # if selected == "Red":
+        #     result_label.config(background="#ffcccc")
+        #     color_display.config(background="#ff0000", text="")
+        # elif selected == "Green":
+        #     result_label.config(background="#ccffcc")
+        #     color_display.config(background="#00ff00", text="")
+        # elif selected == "Blue":
+        #     result_label.config(background="#ccccff")
+        #     color_display.config(background="#0000ff", text="")
+        # else:
+        #     result_label.config(background="#ffffff")
+        #     color_display.config(background="#f0f0f0", text="Pick a color")
+
+    def on_selection_change_1(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var1.get()
+
+        self.measure_points[1] = int(selected)
+
+    def on_selection_change_2(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var2.get()
+
+        self.measure_points[2] = int(selected)
+
+    def on_selection_change_3(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var3.get()
+
+        self.measure_points[3] = int(selected)
+
+    def on_selection_change_4(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var4.get()
+
+        self.measure_points[4] = int(selected)
+
+    def on_selection_change_5(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var5.get()
+
+        self.measure_points[5] = int(selected)
+
+    def on_selection_change_6(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var6.get()
+
+        self.measure_points[6] = int(selected)
+
+    def on_selection_change_7(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var7.get()
+
+        self.measure_points[7] = int(selected)
+
+    def on_selection_change_8(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var8.get()
+
+        self.measure_points[8] = int(selected)
+
+    def on_selection_change_9(self, event):
+        """Update the display when a new option is selected"""
+        selected = self.selection_var9.get()
+
+        self.measure_points[9] = int(selected)
+
 
 # Main function to run the application
 if __name__ == "__main__":
