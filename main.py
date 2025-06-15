@@ -427,8 +427,8 @@ class PlottingGUI:
         # else:
         #     print("open failed")
 
-        self.motor_ins = motor(port = '/dev/ttyUSB0', baud_rate = 115200)
-        self.laser_ins = laser(port = '/dev/ttyUSB1', baud_rate = 9600)
+        self.motor_ins = motor(port = '/dev/ttyUSB1', baud_rate = 115200)
+        self.laser_ins = laser(port = '/dev/ttyUSB0', baud_rate = 9600)
 
     def close_serial(self):
         self.motor_ins.disconnect()
@@ -457,6 +457,7 @@ class PlottingGUI:
         inds = []
         internal = 360 // num_points
         for i in range(0, 359, internal):
+            print("move to: ", i)
             self.motor_ins.move_to(i)
             inds.append(i)
             dis = self.laser_ins.get_distance()
@@ -468,6 +469,7 @@ class PlottingGUI:
             
 
         for i in reversed(inds):
+            print("move to: ", i)
             self.motor_ins.move_to(i)
             inds.append(i)
             dis = self.laser_ins.get_distance()
