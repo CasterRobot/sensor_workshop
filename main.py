@@ -25,7 +25,7 @@ class PlottingGUI:
 
         # Buttons to plot different functions
 
-        self.stop_button = tk.Button(self.button_frame, text="Stop/Start", command=self.stop_update)
+        self.stop_button = tk.Button(self.button_frame, text="Connect", command=self.stop_update)
         self.stop_button.pack(side=tk.LEFT, padx=5)
 
         self.plot_button1 = tk.Button(self.button_frame, text="Measure", command=self.toggle_measure)
@@ -37,11 +37,11 @@ class PlottingGUI:
         # self.plot_button3 = tk.Button(self.button_frame, text="Else", command=self.toggle_tangent)
         # self.plot_button3.pack(side=tk.LEFT, padx=5)
 
-        self.clear_button = tk.Button(self.button_frame, text="Clear All Plots", command=self.clear_canvas)
-        self.clear_button.pack(side=tk.LEFT, padx=5)
+        # self.clear_button = tk.Button(self.button_frame, text="Clear All Plots", command=self.clear_canvas)
+        # self.clear_button.pack(side=tk.LEFT, padx=5)
 
-        self.exit_button = tk.Button(self.button_frame, text="Exit", command=self.exit_application)
-        self.exit_button.pack(side=tk.LEFT, padx=5)
+        # self.exit_button = tk.Button(self.button_frame, text="Exit", command=self.exit_application)
+        # self.exit_button.pack(side=tk.LEFT, padx=5)
 
         # Frame for text boxes and labels
         
@@ -62,6 +62,24 @@ class PlottingGUI:
         # self.tangent_value.pack(pady=5)
         # self.tangent_value.insert(0, "Hidden")
 
+
+        self.control_frame_title = tk.Frame(master)
+        self.control_frame_title.pack(side=tk.TOP, padx=5)
+
+        # Labels and text boxes for values
+        self.num_points_label = tk.Label(self.control_frame_title, text="  Num of points    |")
+        self.num_points_label.pack(side=tk.LEFT, pady=5)
+        self.diameter_ave_label = tk.Label(self.control_frame_title, text="|    Diameter Ave    |")
+        self.diameter_ave_label.pack(side=tk.LEFT, pady=5)
+        self.diameter_max_label = tk.Label(self.control_frame_title, text="|  Diameter Max  |")
+        self.diameter_max_label.pack(side=tk.LEFT, pady=5)
+        self.diameter_min_label = tk.Label(self.control_frame_title, text="|   Diameter Min      |")
+        self.diameter_min_label.pack(side=tk.LEFT, pady=5)
+        self.display_not_label = tk.Label(self.control_frame_title, text="|    Display/Not")
+        self.display_not_label.pack(side=tk.LEFT, pady=5)
+
+
+
         NUM_sampling = ["4", "6", "10", "30", "90", "180", "360"]
 
         self.selection_var0 = tk.StringVar(value=NUM_sampling[0])
@@ -75,9 +93,9 @@ class PlottingGUI:
         self.selection_var8 = tk.StringVar(value=NUM_sampling[0])
         self.selection_var9 = tk.StringVar(value=NUM_sampling[0])
 
+        ## for measurement 0
         self.control_frame_0 = tk.Frame(master)
         self.control_frame_0.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_0 = ttk.Combobox(
             self.control_frame_0, 
             textvariable=self.selection_var0,
@@ -87,21 +105,25 @@ class PlottingGUI:
         )
         self.selection_menu_0.pack(side=tk.LEFT, pady=5)
         self.selection_menu_0.bind("<<ComboboxSelected>>", self.on_selection_change_0)
-
-        self.data_0_switch = ctk.CTkSwitch(self.control_frame_0, text="Measure 0", command=self.data_0_on_off)
-        self.data_0_switch.pack(side=tk.LEFT, pady=5)
-
         # Labels and text boxes for values
         self.measure_value_label_0 = tk.Label(self.control_frame_0, text="      ")
         self.measure_value_label_0.pack(side=tk.LEFT, pady=5)
-        self.measure_value_0 = tk.Entry(self.control_frame_0, width=10)
+        self.measure_value_0 = tk.Entry(self.control_frame_0, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_0.pack(side=tk.LEFT, pady=1)
-        self.measure_value_0.insert(0, "Diameter")
+        self.measure_value_0.insert(0, "Diameter Ave")
+        self.measure_value_max_0 = tk.Entry(self.control_frame_0, width=20)
+        self.measure_value_max_0.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_0.insert(0, "Diameter Max")
+        self.measure_value_min_0 = tk.Entry(self.control_frame_0, width=20)
+        self.measure_value_min_0.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_0.insert(0, "Diameter Min")
+        self.data_0_switch = ctk.CTkSwitch(self.control_frame_0, text="Display 0", command=self.data_0_on_off)
+        self.data_0_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 1
         self.control_frame_1 = tk.Frame(master)
         self.control_frame_1.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_1 = ttk.Combobox(
             self.control_frame_1, 
             textvariable=self.selection_var1,
@@ -111,21 +133,24 @@ class PlottingGUI:
         )
         self.selection_menu_1.pack(side=tk.LEFT, pady=5)
         self.selection_menu_1.bind("<<ComboboxSelected>>", self.on_selection_change_1)
-
-        self.data_1_switch = ctk.CTkSwitch(self.control_frame_1, text="Measure 1", command=self.data_1_on_off)
-        self.data_1_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_1 = tk.Label(self.control_frame_1, text="      ")
         self.measure_value_label_1.pack(side=tk.LEFT, pady=5)
-        self.measure_value_1 = tk.Entry(self.control_frame_1, width=10)
+        self.measure_value_1 = tk.Entry(self.control_frame_1, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_1.pack(side=tk.LEFT, pady=5)
-        self.measure_value_1.insert(0, "Diameter")
+        self.measure_value_1.insert(0, "Diameter Ave")
+        self.measure_value_max_1 = tk.Entry(self.control_frame_1, width=20)
+        self.measure_value_max_1.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_1.insert(0, "Diameter Max")
+        self.measure_value_min_1 = tk.Entry(self.control_frame_1, width=20)
+        self.measure_value_min_1.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_1.insert(0, "Diameter Min")
+        self.data_1_switch = ctk.CTkSwitch(self.control_frame_1, text="Display 1", command=self.data_1_on_off)
+        self.data_1_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 2
         self.control_frame_2 = tk.Frame(master)
         self.control_frame_2.pack(side=tk.TOP, padx=5)
-
-
         self.selection_menu_2 = ttk.Combobox(
             self.control_frame_2, 
             textvariable=self.selection_var2,
@@ -135,20 +160,24 @@ class PlottingGUI:
         )
         self.selection_menu_2.pack(side=tk.LEFT, pady=5)
         self.selection_menu_2.bind("<<ComboboxSelected>>", self.on_selection_change_2)
-
-        self.data_2_switch = ctk.CTkSwitch(self.control_frame_2, text="Measure 2", command=self.data_2_on_off)
-        self.data_2_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_2 = tk.Label(self.control_frame_2, text="      ")
         self.measure_value_label_2.pack(side=tk.LEFT, pady=5)
-        self.measure_value_2 = tk.Entry(self.control_frame_2, width=10)
+        self.measure_value_2 = tk.Entry(self.control_frame_2, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_2.pack(side=tk.LEFT, pady=5)
-        self.measure_value_2.insert(0, "Diameter")
+        self.measure_value_2.insert(0, "Diameter Ave")
+        self.measure_value_max_2 = tk.Entry(self.control_frame_2, width=20)
+        self.measure_value_max_2.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_2.insert(0, "Diameter Max")
+        self.measure_value_min_2 = tk.Entry(self.control_frame_2, width=20)
+        self.measure_value_min_2.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_2.insert(0, "Diameter Min")
+        self.data_2_switch = ctk.CTkSwitch(self.control_frame_2, text="Display 2", command=self.data_2_on_off)
+        self.data_2_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 3
         self.control_frame_3 = tk.Frame(master)
         self.control_frame_3.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_3 = ttk.Combobox(
             self.control_frame_3, 
             textvariable=self.selection_var3,
@@ -158,20 +187,24 @@ class PlottingGUI:
         )
         self.selection_menu_3.pack(side=tk.LEFT, pady=5)
         self.selection_menu_3.bind("<<ComboboxSelected>>", self.on_selection_change_3)
-
-        self.data_3_switch = ctk.CTkSwitch(self.control_frame_3, text="Measure 3", command=self.data_3_on_off)
-        self.data_3_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_3 = tk.Label(self.control_frame_3, text="      ")
         self.measure_value_label_3.pack(side=tk.LEFT, pady=5)
-        self.measure_value_3 = tk.Entry(self.control_frame_3, width=10)
+        self.measure_value_3 = tk.Entry(self.control_frame_3, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_3.pack(side=tk.LEFT, pady=5)
-        self.measure_value_3.insert(0, "Diameter")
+        self.measure_value_3.insert(0, "Diameter Ave")
+        self.measure_value_max_3 = tk.Entry(self.control_frame_3, width=20)
+        self.measure_value_max_3.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_3.insert(0, "Diameter Max")
+        self.measure_value_min_3 = tk.Entry(self.control_frame_3, width=20)
+        self.measure_value_min_3.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_3.insert(0, "Diameter Min")
+        self.data_3_switch = ctk.CTkSwitch(self.control_frame_3, text="Display 3", command=self.data_3_on_off)
+        self.data_3_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 4
         self.control_frame_4 = tk.Frame(master)
         self.control_frame_4.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_4 = ttk.Combobox(
             self.control_frame_4, 
             textvariable=self.selection_var4,
@@ -181,20 +214,24 @@ class PlottingGUI:
         )
         self.selection_menu_4.pack(side=tk.LEFT, pady=5)
         self.selection_menu_4.bind("<<ComboboxSelected>>", self.on_selection_change_4)
-
-        self.data_4_switch = ctk.CTkSwitch(self.control_frame_4, text="Measure 4", command=self.data_4_on_off)
-        self.data_4_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_4 = tk.Label(self.control_frame_4, text="      ")
         self.measure_value_label_4.pack(side=tk.LEFT, pady=5)
-        self.measure_value_4 = tk.Entry(self.control_frame_4, width=10)
+        self.measure_value_4 = tk.Entry(self.control_frame_4, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_4.pack(side=tk.LEFT, pady=5)
-        self.measure_value_4.insert(0, "Diameter")
+        self.measure_value_4.insert(0, "Diameter Ave")
+        self.measure_value_max_4 = tk.Entry(self.control_frame_4, width=20)
+        self.measure_value_max_4.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_4.insert(0, "Diameter Max")
+        self.measure_value_min_4 = tk.Entry(self.control_frame_4, width=20)
+        self.measure_value_min_4.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_4.insert(0, "Diameter Min")
+        self.data_4_switch = ctk.CTkSwitch(self.control_frame_4, text="Display 4", command=self.data_4_on_off)
+        self.data_4_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 5
         self.control_frame_5 = tk.Frame(master)
         self.control_frame_5.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_5 = ttk.Combobox(
             self.control_frame_5, 
             textvariable=self.selection_var5,
@@ -204,20 +241,24 @@ class PlottingGUI:
         )
         self.selection_menu_5.pack(side=tk.LEFT, pady=5)
         self.selection_menu_5.bind("<<ComboboxSelected>>", self.on_selection_change_5)
-
-        self.data_5_switch = ctk.CTkSwitch(self.control_frame_5, text="Measure 5", command=self.data_5_on_off)
-        self.data_5_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_5 = tk.Label(self.control_frame_5, text="      ")
         self.measure_value_label_5.pack(side=tk.LEFT, pady=5)
-        self.measure_value_5 = tk.Entry(self.control_frame_5, width=10)
+        self.measure_value_5 = tk.Entry(self.control_frame_5, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_5.pack(side=tk.LEFT, pady=5)
-        self.measure_value_5.insert(0, "Diameter")
+        self.measure_value_5.insert(0, "Diameter Ave")
+        self.measure_value_max_5 = tk.Entry(self.control_frame_5, width=20)
+        self.measure_value_max_5.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_5.insert(0, "Diameter Max")
+        self.measure_value_min_5 = tk.Entry(self.control_frame_5, width=20)
+        self.measure_value_min_5.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_5.insert(0, "Diameter Min")
+        self.data_5_switch = ctk.CTkSwitch(self.control_frame_5, text="Display 5", command=self.data_5_on_off)
+        self.data_5_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 6
         self.control_frame_6 = tk.Frame(master)
         self.control_frame_6.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_6 = ttk.Combobox(
             self.control_frame_6, 
             textvariable=self.selection_var6,
@@ -227,20 +268,24 @@ class PlottingGUI:
         )
         self.selection_menu_6.pack(side=tk.LEFT, pady=5)
         self.selection_menu_6.bind("<<ComboboxSelected>>", self.on_selection_change_6)
-
-        self.data_6_switch = ctk.CTkSwitch(self.control_frame_6, text="Measure 6", command=self.data_6_on_off)
-        self.data_6_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_6 = tk.Label(self.control_frame_6, text="      ")
         self.measure_value_label_6.pack(side=tk.LEFT, pady=5)
-        self.measure_value_6 = tk.Entry(self.control_frame_6, width=10)
+        self.measure_value_6 = tk.Entry(self.control_frame_6, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_6.pack(side=tk.LEFT, pady=5)
-        self.measure_value_6.insert(0, "Diameter")
+        self.measure_value_6.insert(0, "Diameter Ave")
+        self.measure_value_max_6 = tk.Entry(self.control_frame_6, width=20)
+        self.measure_value_max_6.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_6.insert(0, "Diameter Max")
+        self.measure_value_min_6 = tk.Entry(self.control_frame_6, width=20)
+        self.measure_value_min_6.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_6.insert(0, "Diameter Min")
+        self.data_6_switch = ctk.CTkSwitch(self.control_frame_6, text="Display 6", command=self.data_6_on_off)
+        self.data_6_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 7
         self.control_frame_7 = tk.Frame(master)
         self.control_frame_7.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_7 = ttk.Combobox(
             self.control_frame_7, 
             textvariable=self.selection_var7,
@@ -250,20 +295,24 @@ class PlottingGUI:
         )
         self.selection_menu_7.pack(side=tk.LEFT, pady=5)
         self.selection_menu_7.bind("<<ComboboxSelected>>", self.on_selection_change_7)
-
-        self.data_7_switch = ctk.CTkSwitch(self.control_frame_7, text="Measure 7", command=self.data_7_on_off)
-        self.data_7_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_7 = tk.Label(self.control_frame_7, text="      ")
         self.measure_value_label_7.pack(side=tk.LEFT, pady=5)
-        self.measure_value_7 = tk.Entry(self.control_frame_7, width=10)
+        self.measure_value_7 = tk.Entry(self.control_frame_7, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_7.pack(side=tk.LEFT, pady=5)
-        self.measure_value_7.insert(0, "Diameter")
+        self.measure_value_7.insert(0, "Diameter Ave")
+        self.measure_value_max_7 = tk.Entry(self.control_frame_7, width=20)
+        self.measure_value_max_7.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_7.insert(0, "Diameter Max")
+        self.measure_value_min_7 = tk.Entry(self.control_frame_7, width=20)
+        self.measure_value_min_7.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_7.insert(0, "Diameter Min")
+        self.data_7_switch = ctk.CTkSwitch(self.control_frame_7, text="Display 7", command=self.data_7_on_off)
+        self.data_7_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 8
         self.control_frame_8 = tk.Frame(master)
         self.control_frame_8.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_8 = ttk.Combobox(
             self.control_frame_8, 
             textvariable=self.selection_var8,
@@ -273,20 +322,24 @@ class PlottingGUI:
         )
         self.selection_menu_8.pack(side=tk.LEFT, pady=5)
         self.selection_menu_8.bind("<<ComboboxSelected>>", self.on_selection_change_8)
-
-        self.data_8_switch = ctk.CTkSwitch(self.control_frame_8, text="Measure 8", command=self.data_8_on_off)
-        self.data_8_switch.pack(side=tk.LEFT, pady=5)
-
         self.measure_value_label_8 = tk.Label(self.control_frame_8, text="      ")
         self.measure_value_label_8.pack(side=tk.LEFT, pady=5)
-        self.measure_value_8 = tk.Entry(self.control_frame_8, width=10)
+        self.measure_value_8 = tk.Entry(self.control_frame_8, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_8.pack(side=tk.LEFT, pady=5)
-        self.measure_value_8.insert(0, "Diameter")
+        self.measure_value_8.insert(0, "Diameter Ave")
+        self.measure_value_max_8 = tk.Entry(self.control_frame_8, width=20)
+        self.measure_value_max_8.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_8.insert(0, "Diameter Max")
+        self.measure_value_min_8 = tk.Entry(self.control_frame_8, width=20)
+        self.measure_value_min_8.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_8.insert(0, "Diameter Min")
+        self.data_8_switch = ctk.CTkSwitch(self.control_frame_8, text="Display 8", command=self.data_8_on_off)
+        self.data_8_switch.pack(side=tk.LEFT, pady=5)
 
+        ## for measurement 9
         self.control_frame_9 = tk.Frame(master)
         self.control_frame_9.pack(side=tk.TOP, padx=5)
-
         self.selection_menu_9 = ttk.Combobox(
             self.control_frame_9, 
             textvariable=self.selection_var9,
@@ -295,29 +348,45 @@ class PlottingGUI:
             width=12
         )
         self.selection_menu_9.pack(side=tk.LEFT, pady=5)
-        self.selection_menu_0.bind("<<ComboboxSelected>>", self.on_selection_change_9)
-
-        self.data_9_switch = ctk.CTkSwitch(self.control_frame_9, text="Measure 9", command=self.data_9_on_off)
-        self.data_9_switch.pack(side=tk.LEFT, pady=5)
-
+        self.selection_menu_9.bind("<<ComboboxSelected>>", self.on_selection_change_9)
         self.measure_value_label_9 = tk.Label(self.control_frame_9, text="      ")
         self.measure_value_label_9.pack(side=tk.LEFT, pady=5)
-        self.measure_value_9 = tk.Entry(self.control_frame_9, width=10)
+        self.measure_value_9 = tk.Entry(self.control_frame_9, width=20)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_9.pack(side=tk.LEFT, pady=5)
-        self.measure_value_9.insert(0, "Diameter")
+        self.measure_value_9.insert(0, "Diameter Ave")
+        self.measure_value_max_9 = tk.Entry(self.control_frame_9, width=20)
+        self.measure_value_max_9.pack(side=tk.LEFT, pady=1)
+        self.measure_value_max_9.insert(0, "Diameter Max")
+        self.measure_value_min_9 = tk.Entry(self.control_frame_9, width=20)
+        self.measure_value_min_9.pack(side=tk.LEFT, pady=1)
+        self.measure_value_min_9.insert(0, "Diameter Min")
+        self.data_9_switch = ctk.CTkSwitch(self.control_frame_9, text="Display 9", command=self.data_9_on_off)
+        self.data_9_switch.pack(side=tk.LEFT, pady=5)
 
 
         self.control_frame_ave = tk.Frame(master)
         self.control_frame_ave.pack(side=tk.TOP, padx=5)
-
-
         self.measure_value_label_ave = tk.Label(self.control_frame_ave, text="Average:  ")
         self.measure_value_label_ave.pack(side=tk.LEFT, pady=5)
         self.measure_value_ave = tk.Entry(self.control_frame_ave, width=10)
         # self.measure_value.place(relx=0.95, rely=0.95)
         self.measure_value_ave.pack(side=tk.LEFT, pady=5)
         self.measure_value_ave.insert(0, "Diameter")
+
+        self.measure_value_label_max = tk.Label(self.control_frame_ave, text="  Max:  ")
+        self.measure_value_label_max.pack(side=tk.LEFT, pady=5)
+        self.measure_value_max = tk.Entry(self.control_frame_ave, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_max.pack(side=tk.LEFT, pady=5)
+        self.measure_value_max.insert(0, "Diameter")
+
+        self.measure_value_label_min = tk.Label(self.control_frame_ave, text="  Min:  ")
+        self.measure_value_label_min.pack(side=tk.LEFT, pady=5)
+        self.measure_value_min = tk.Entry(self.control_frame_ave, width=10)
+        # self.measure_value.place(relx=0.95, rely=0.95)
+        self.measure_value_min.pack(side=tk.LEFT, pady=5)
+        self.measure_value_min.insert(0, "Diameter")
 
 
         # # Frame for sliders

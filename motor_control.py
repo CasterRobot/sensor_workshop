@@ -23,7 +23,7 @@ class motor:
         send_data = bytes.fromhex('A1' + hex_bytes.hex().upper())
         self.ser.write(send_data)
         print("发送成功：", send_data.hex().upper())
-        time.sleep(3)
+        time.sleep(0.2)
 
     def disconnect(self):
         self.ser.close()
@@ -56,9 +56,9 @@ class laser:
             print("未收到数据")
             dis = None
         
-        time.sleep(1)
+        time.sleep(0.1)
 
-        return dis
+        return dis*1000 + 37 # mm
 
     def disconnect(self):
         self.ser.close()
