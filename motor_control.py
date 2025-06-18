@@ -19,11 +19,11 @@ class motor:
         """
         angle: 0-360
         """
-        hex_bytes = int(3200 * angle / 360).to_bytes(2, byteorder='big', signed=False)
+        hex_bytes = int(6400 * angle / 360).to_bytes(2, byteorder='big', signed=False)
         send_data = bytes.fromhex('A1' + hex_bytes.hex().upper())
         self.ser.write(send_data)
         print("发送成功：", send_data.hex().upper())
-        time.sleep(0.2)
+        time.sleep(2)
 
     def disconnect(self):
         self.ser.close()
@@ -50,15 +50,15 @@ class laser:
         if data_receive:
             # 按十六进制打印接收到的数据
             dis = data_receive.decode('utf-8').strip().split("=")[-1].split("m")[0]
-            dis = float(dis)
+            dis = float(dis)*1000 + 37 # mm
             # print("接收到数据：", hex_str)
         else:
             print("未收到数据")
             dis = None
         
-        time.sleep(0.1)
+        time.sleep(0.2)
 
-        return dis*1000 + 37 # mm
+        return dis
 
     def disconnect(self):
         self.ser.close()

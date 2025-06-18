@@ -4,12 +4,14 @@ from serial_reading import *
 from data_processing import *
 from motor_control import *
 import customtkinter as ctk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+
 
 class PlottingGUI:
     def __init__(self, master):
         self.master = master
         master.title("Multi-Plotting GUI")
+        
 
         # Main frame for the plot and control area
         self.main_frame = tk.Frame(master)
@@ -69,11 +71,11 @@ class PlottingGUI:
         # Labels and text boxes for values
         self.num_points_label = tk.Label(self.control_frame_title, text="  Num of points    |")
         self.num_points_label.pack(side=tk.LEFT, pady=5)
-        self.diameter_ave_label = tk.Label(self.control_frame_title, text="|    Diameter Ave    |")
+        self.diameter_ave_label = tk.Label(self.control_frame_title, text="|    Diameter Ave (mm) |")
         self.diameter_ave_label.pack(side=tk.LEFT, pady=5)
-        self.diameter_max_label = tk.Label(self.control_frame_title, text="|  Diameter Max  |")
+        self.diameter_max_label = tk.Label(self.control_frame_title, text="| Diameter Max (mm) |")
         self.diameter_max_label.pack(side=tk.LEFT, pady=5)
-        self.diameter_min_label = tk.Label(self.control_frame_title, text="|   Diameter Min      |")
+        self.diameter_min_label = tk.Label(self.control_frame_title, text="|   Diameter Min (mm) |")
         self.diameter_min_label.pack(side=tk.LEFT, pady=5)
         self.display_not_label = tk.Label(self.control_frame_title, text="|    Display/Not")
         self.display_not_label.pack(side=tk.LEFT, pady=5)
@@ -456,29 +458,55 @@ class PlottingGUI:
         }
 
         self.measure_points = {
-                        0: 6, 
-                        1: 6, 
-                        2: 6, 
-                        3: 6, 
-                        4: 6,
-                        5: 6, 
-                        6: 6, 
-                        7: 6, 
-                        8: 6, 
-                        9: 6
+                        0: 4, 
+                        1: 4, 
+                        2: 4, 
+                        3: 4, 
+                        4: 4,
+                        5: 4, 
+                        6: 4, 
+                        7: 4, 
+                        8: 4, 
+                        9: 4
         }
 
-        self.diameters = {
-                        0: 6, 
-                        1: 6, 
-                        2: 6, 
-                        3: 6, 
-                        4: 6,
-                        5: 6, 
-                        6: 6, 
-                        7: 6, 
-                        8: 6, 
-                        9: 6
+        self.diameters_ave = {
+                        0: 0, 
+                        1: 0, 
+                        2: 0, 
+                        3: 0, 
+                        4: 0,
+                        5: 0, 
+                        6: 0, 
+                        7: 0, 
+                        8: 0, 
+                        9: 0
+        }
+
+        self.diameters_max = {
+                        0: 0, 
+                        1: 0, 
+                        2: 0, 
+                        3: 0, 
+                        4: 0,
+                        5: 0, 
+                        6: 0, 
+                        7: 0, 
+                        8: 0, 
+                        9: 0
+        }
+
+        self.diameters_min = {
+                        0: 0, 
+                        1: 0, 
+                        2: 0, 
+                        3: 0, 
+                        4: 0,
+                        5: 0, 
+                        6: 0, 
+                        7: 0, 
+                        8: 0, 
+                        9: 0
         }
 
         # self.open_serial()
@@ -497,7 +525,92 @@ class PlottingGUI:
         #     print("open failed")
 
         self.motor_ins = motor(port = '/dev/ttyUSB1', baud_rate = 115200)
-        self.laser_ins = laser(port = '/dev/ttyUSB0', baud_rate = 9600)
+        self.laser_ins = laser(port = '/dev/ttyUSB0', baud_rate = 38400)
+
+        # self.show_status_window("Serial Connected")
+
+        messagebox.showinfo(title="", message="Serial Connected.")
+
+    def show_status_window(self, task_name):
+        """Create and display the system status window"""
+        # Create top-level window
+        self.status_window = tk.Toplevel(self.master)
+        self.status_window.title("System Status")
+        self.status_window.geometry("400x200")
+        self.status_window.resizable(False, False)
+        self.status_window.configure(bg="#f5f5f5")
+        
+        # Make it modal (prevent interaction with main window)
+        # self.status_window.grab_set()
+        
+        # Header
+        # header = tk.Label(
+        #     self.status_window,
+        #     text="SYSTEM IS RUNNING",
+        #     font=("Arial", 14, "bold"),
+        #     bg="#2c3e50",
+        #     fg="white",
+        #     pady=10
+        # )
+        # header.pack(fill="x")
+        
+        # Animated icon
+        icon_frame = tk.Frame(self.status_window, bg="#f5f5f5", pady=10)
+        icon_frame.pack()
+        
+        # self.icon_label = tk.Label(
+        #     icon_frame,
+        #     text="▶",  # Play symbol
+        #     font=("Arial", 24),
+        #     fg="#27ae60",
+        #     bg="#f5f5f5"
+        # )
+        # self.icon_label.pack()
+        # self.animate_icon()
+        
+        # Status message
+        self.status_label = tk.Label(
+            self.status_window,
+            text=f"{task_name}",
+            font=("Arial", 11),
+            bg="#f5f5f5"
+        )
+        self.status_label.pack(pady=(50, 10))
+        
+        
+        # Center the status window relative to main window
+        # self.center_window(self.status_window)
+
+
+    # def animate_icon(self):
+    #     """Animate the status icon"""
+    #     if self.status_window and self.status_window.winfo_exists():
+    #         current_text = self.icon_label.cget("text")
+    #         if current_text == "▶":
+    #             self.icon_label.config(text="▷")
+    #         else:
+    #             self.icon_label.config(text="▶")
+            
+    #         # Schedule next animation
+    #         self.master.after(500, self.animate_icon)
+    
+    # def center_window(self, window):
+    #     """Center a window relative to the main window"""
+    #     self.master.update_idletasks()
+    #     main_x = self.master.winfo_x()
+    #     main_y = self.master.winfo_y()
+    #     main_width = self.master.winfo_width()
+    #     main_height = self.master.winfo_height()
+        
+    #     window.update_idletasks()
+    #     width = window.winfo_width()
+    #     height = window.winfo_height()
+        
+    #     x = main_x + (main_width // 2) - (width // 2)
+    #     y = main_y + (main_height // 2) - (height // 2)
+        
+    #     window.geometry(f"+{x}+{y}")
+
 
     def close_serial(self):
         self.motor_ins.disconnect()
@@ -525,31 +638,36 @@ class PlottingGUI:
         dis_list = []
         inds = []
         internal = 360 // num_points
-        for i in range(0, 359, internal):
+        full_diameters = []
+        for i in range(0, 361, internal):
             print("move to: ", i)
             self.motor_ins.move_to(i)
-            inds.append(i)
+            inds.append(360-i)
             dis = self.laser_ins.get_distance()
             if dis is None:
                 continue
 
-            angle_list.append(i)
+            angle_list.append(360-i)
             dis_list.append(dis)
             
 
-        for i in reversed(inds):
-            print("move to: ", i)
-            self.motor_ins.move_to(i)
-            inds.append(i)
+        for ind, a in enumerate(angle_list):
+            print("move to: ", a)
+            self.motor_ins.move_to(a)
             dis = self.laser_ins.get_distance()
             if dis is None:
                 continue
 
-            angle_list.append(i)
-            dis_list.append(dis)
-        angle_list, dis_list = self.outlier_remove(np.array(angle_list), np.array(dis_list))
+            # angle_list.append(a)
+            # dis_list.append(dis)
 
-        self.diameters[self.data_id] = np.average(dis_list) * 2
+            full_diameters.append(dis_list[ind]+dis)
+
+        #angle_list, dis_list = self.outlier_remove(np.array(angle_list), np.array(dis_list))
+
+        self.diameters_ave[self.data_id] = np.average(full_diameters)
+        self.diameters_max[self.data_id] = np.max(full_diameters)
+        self.diameters_min[self.data_id] = np.min(full_diameters)
 
         angle_dis = []
         for a, d in zip(angle_list, dis_list):
@@ -572,15 +690,18 @@ class PlottingGUI:
     #     self.clear_plot()
 
     def toggle_measure(self):
+        messagebox.showinfo(title="", message="Cclik 'OK' to start measurement, \n and WAIT ......")
         self.data_id += 1
         self.is_update = True
         self.plotting_state["measure"] = True #not self.plotting_state["measure"]
         self.data_plot[self.data_id] = True
+        
         self.measure_once(self.measure_points[self.data_id])
         
         self.toggle_plot(self.angle_dis_dict[self.data_id], "measure", self.colors[self.data_id], self.plotting_state["measure"])
         self.update_plot()
         self.update_value_display()
+        messagebox.showinfo(title="", message="Finished.")
 
     def toggle_plot(self, func, title, color, show, limit_y=False):
         if show:
@@ -811,48 +932,100 @@ class PlottingGUI:
         self.measure_value_0.delete(0, tk.END)
         # self.measure_value.insert(0, "Visible" if self.plotting_state["measure"] else "Hidden")
 
-        self.measure_value_0.insert(0, self.diameters[0])
+        self.measure_value_0.insert(0, self.diameters_ave[0])
+        self.measure_value_max_0.delete(0, tk.END)
+        self.measure_value_max_0.insert(0, self.diameters_max[0])
+        self.measure_value_min_0.delete(0, tk.END)
+        self.measure_value_min_0.insert(0, self.diameters_min[0])
 
         self.measure_value_1.delete(0, tk.END)
-        self.measure_value_1.insert(0, self.diameters[1])
+        self.measure_value_1.insert(0, self.diameters_ave[1])
+        self.measure_value_max_1.delete(0, tk.END)
+        self.measure_value_max_1.insert(0, self.diameters_max[1])
+        self.measure_value_min_1.delete(0, tk.END)
+        self.measure_value_min_1.insert(0, self.diameters_min[1])
 
         self.measure_value_2.delete(0, tk.END)
-        self.measure_value_2.insert(0, self.diameters[2])
+        self.measure_value_2.insert(0, self.diameters_ave[2])
+        self.measure_value_max_2.delete(0, tk.END)
+        self.measure_value_max_2.insert(0, self.diameters_max[2])
+        self.measure_value_min_2.delete(0, tk.END)
+        self.measure_value_min_2.insert(0, self.diameters_min[2])
 
         self.measure_value_3.delete(0, tk.END)
-        self.measure_value_3.insert(0, self.diameters[3])
+        self.measure_value_3.insert(0, self.diameters_ave[3])
+        self.measure_value_max_3.delete(0, tk.END)
+        self.measure_value_max_3.insert(0, self.diameters_max[3])
+        self.measure_value_min_3.delete(0, tk.END)
+        self.measure_value_min_3.insert(0, self.diameters_min[3])
 
         self.measure_value_4.delete(0, tk.END)
-        self.measure_value_4.insert(0, self.diameters[4])
+        self.measure_value_4.insert(0, self.diameters_ave[4])
+        self.measure_value_max_4.delete(0, tk.END)
+        self.measure_value_max_4.insert(0, self.diameters_max[4])
+        self.measure_value_min_4.delete(0, tk.END)
+        self.measure_value_min_4.insert(0, self.diameters_min[4])
 
         self.measure_value_5.delete(0, tk.END)
-        self.measure_value_5.insert(0, self.diameters[5])
+        self.measure_value_5.insert(0, self.diameters_ave[5])
+        self.measure_value_max_5.delete(0, tk.END)
+        self.measure_value_max_5.insert(0, self.diameters_max[5])
+        self.measure_value_min_5.delete(0, tk.END)
+        self.measure_value_min_5.insert(0, self.diameters_min[5])
 
         self.measure_value_6.delete(0, tk.END)
-        self.measure_value_6.insert(0, self.diameters[6])
+        self.measure_value_6.insert(0, self.diameters_ave[6])
+        self.measure_value_max_6.delete(0, tk.END)
+        self.measure_value_max_6.insert(0, self.diameters_max[6])
+        self.measure_value_min_6.delete(0, tk.END)
+        self.measure_value_min_6.insert(0, self.diameters_min[6])
 
         self.measure_value_7.delete(0, tk.END)
-        self.measure_value_7.insert(0, self.diameters[7])
+        self.measure_value_7.insert(0, self.diameters_ave[7])
+        self.measure_value_max_7.delete(0, tk.END)
+        self.measure_value_max_7.insert(0, self.diameters_max[7])
+        self.measure_value_min_7.delete(0, tk.END)
+        self.measure_value_min_7.insert(0, self.diameters_min[7])
 
         self.measure_value_8.delete(0, tk.END)
-        self.measure_value_8.insert(0, self.diameters[8])
+        self.measure_value_8.insert(0, self.diameters_ave[8])
+        self.measure_value_max_8.delete(0, tk.END)
+        self.measure_value_max_8.insert(0, self.diameters_max[8])
+        self.measure_value_min_8.delete(0, tk.END)
+        self.measure_value_min_8.insert(0, self.diameters_min[8])
 
         self.measure_value_9.delete(0, tk.END)
-        self.measure_value_9.insert(0, self.diameters[9])
+        self.measure_value_9.insert(0, self.diameters_ave[9])
+        self.measure_value_max_9.delete(0, tk.END)
+        self.measure_value_max_9.insert(0, self.diameters_max[9])
+        self.measure_value_min_9.delete(0, tk.END)
+        self.measure_value_min_9.insert(0, self.diameters_min[9])
 
         self.update_ave()
 
     def update_ave(self):
         ave = 0
+        max_v = 0
+        min_v = 0
         num = 0
         for k in self.data_plot .keys():
             if self.data_plot[k]:
-                ave += self.diameters[k]
+                ave += self.diameters_ave[k]
+                max_v += self.diameters_max[k]
+                min_v += self.diameters_min[k]
                 num +=1
-
-        final_ave = ave / num
+        if num == 0:
+            final_ave = 0
+            final_max = 0
+            final_min = 0
+        else:
+            final_ave = ave / num
+            final_max = max_v / num
+            final_min = min_v / num
 
         self.measure_value_ave.insert(0, final_ave)
+        self.measure_value_max.insert(0, final_max)
+        self.measure_value_min.insert(0, final_min)
 
 
 
